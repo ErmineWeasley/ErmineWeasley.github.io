@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style>
+	
+			/* Set the background color of body to tan */
+		body {
+		  background-color: #6E6AC8;
+		  font-family: Arial;
+		  	margin: 5px;
+			padding: 15px;
+			align: center;
+			font-size: large;
+		}
+		form {
+			width: 90%;
+			height: auto;
+			background-image: url('calcmax.png');
+			background-size: cover;
+			background-position: center; 
+			<!-- background-image: linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet); -->
+			padding: 3% 4%;
+			align: center;
+		
+		}
+		h1, h2, h3 {
+		align: center;
+		text-align: center;		
+		vertical-align: top;
+		text-shadow: 2px 2px #00BBCC;
+		}
+		p {
+		text-align: left;		
+		}
+		.container {
+			margin: 10px 40px;
+			padding: 5% 15%;
+			align: center;
+			background-color: rgba(140,150,160,0.6); 
+			
+		}
+		.row {
+			width: 90%;
+			align: left;
+			<!-- display: inline-block;  -->
+			display: flex;  
+		}
+		.warn {
+		color: rgba(0, 30, 50, 1);
+		font-size: x-large;
+		font-weight: 800;
+		border: 3px solid #d00;
+		padding: 5px;
+		}
+		
+		/* On screens that are 992px or less, set the background color to blue */
+		@media screen and (max-width: 992px) {
+		  body {
+			background-color:  rgb(73,155,234);
+		  }
+		
+		form {
+			width: 95%;
+			height: auto;
+			background-image: url('calcmid.png');
+			background-size: cover;
+			<!-- background-image: linear-gradient(red, orange); -->
+		}
+		}
+		/* On screens that are 600px or less, set the background color to olive */
+		@media screen and (max-width: 600px) {
+		  body {
+			background-color: #3B2BDE;
+		  }
+		form {
+			width: 99%;
+			height: auto;
+			background-image: url('calcmin.png');
+			background-size: cover;
+			<!-- background-image: linear-gradient(black, white); -->
+		}
+
+		}
+	</style>
+</head>
+<body>
+	<form oninput="myFunction()">
+		<div class="container">
+			<div> 
+				<h1>Депозитний калькулятор</h1>
+			</div>
+			<div class="row">
+				<div>
+					<p>Введіть суму депозиту
+					<input type="value" id="Summa" value="10000" oninput="myFunction()"> </p>
+				</div>
+			</div>	
+			<div class="row">
+				<p>% на рік мінімум 10
+				<input type="range" id="Percent" value="15" min="10" max="35" step="0.5" oninput="myFunction()">
+				35 - максимум</p>
+			</div>
+			<div>
+				<p>Термін, міс. мінімум 1 
+				<input type="range" id="TermMonth" value="3" min="1" max="36" oninput="myFunction()">
+				 36 максимум</p>
+				<br>
+			</div>
+			<div>
+				<input type="checkbox" id="addpercent" onclick="pFunction()"> Складний процент 
+				
+			
+			<p id="ispercent" style="display:none" onclick="myFunction()">Відсотки прираховують до депозиту й видають наприкінці</p>
+			</div>
+			<div>
+				<p>Вибрано</p> 
+				<div id="TermMonth1"> 
+				</div>
+			<div id="Percent1">%</div></div>	
+			<div class="row">
+				<p><div id="profit"> </div>
+				<div id="profit1"> </div></p>
+			</div>
+			<p class="warn">Ахтунг! Це приблизний розрахунок, що не завважає різної кількості днів у місяці й не робить поправку на високосний рік. </p>
+		</div>
+
+	</form>
+
+
+	<script>
+	function pFunction () {
+		var addpercent = document.getElementById("addpercent");		
+		var ispercent = document.getElementById("ispercent");
+		if (addpercent.checked == true){
+			ispercent.style.display = "block";			
+			} else {
+			ispercent.style.display = "none";
+			}
+	}
+	
+	function myFunction() {
+		var Summa = document.getElementById("Summa").value;
+		var Percent = document.getElementById("Percent").value;
+		var TermMonth = document.getElementById("TermMonth").value;
+	
+		
+		var Percent1 = '%, РІЧНА ставка '+String(Percent);    	
+		var TermMonth1 ='термін, міс. ' +String(TermMonth);   
+
+		document.getElementById("Percent1").innerHTML = Percent1;
+		document.getElementById("TermMonth1").innerHTML = TermMonth1;
+		
+		var addpercent = document.getElementById("addpercent");	
+		var ispercent =  document.getElementById("ispercent");	
+		var profit = 'Сума на рік  '
+		if (addpercent.checked == true){
+		profit='Сума за рік  '+String((Number(Summa)*Math.pow(1+(Number(Percent)/1200),12)).toFixed(2)-Number(Summa)); 
+		}
+		else {
+		profit='Сума за рік  '+String((Number(Summa)*Number(Percent)/100).toFixed(2)); 
+		}
+		
+		document.getElementById("profit").innerHTML = profit;
+		if (addpercent.checked !== true){
+		var profit1 = 'Сума за умовами депозиту  '+String((Number(Summa)*Number(Percent)*Number(TermMonth)/1200).toFixed(2)); 
+		}
+		else {
+		var profit1 = 'Сума за умовами депозиту  '+String((Number(Summa)*Math.pow(1+(Number(Percent)/1200),Number(TermMonth))-Number(Summa)).toFixed(2)); 
+		}
+		document.getElementById("profit1").innerHTML = profit1;
+	}
+
+/*		
+		if (addpercent.checked == true){
+			var i=1;
+			var perc=Percent;
+			while i<13 {
+				perc = 1*(1+perc/1200);
+				i++
+			}
+			var profit = 'Сума за рік  '+String(perc); 
+		}
+			else {
+				var profit = 'Сума за рік  '+String((Number(Summa)*Number(Percent)/100.00).toFixed(2)); 
+		}		
+		document.getElementById("profit").innerHTML = profit; 
+
+	
+	}
+*/
+	</script>
+
+</body>
+</html>
